@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --noStackTrace --runInBand",
-    "test:unit": "npm test --watch -c jest-unit-config.js"
+    "test:unit": "npm test --watch -c ./jest-unit-config.js"
   },
   "keywords": [],
   "author": "Lukas Veiga",
@@ -18,5 +18,8 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.1"
   }
 }
