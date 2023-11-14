@@ -36,4 +36,21 @@ describe("User domain entity", () => {
 
     expect(user.isSubscribed()).toBeFalsy();
   });
+
+  test("isSubscribed should returns true if the user resubscribe", () => {
+    const userData: UserData = {
+      name: "User Test",
+      email: "user@email.com",
+    };
+
+    const user = User.create(userData);
+
+    user.unsubscribe();
+
+    expect(user.isSubscribed()).toBeFalsy();
+
+    user.resubscribe();
+
+    expect(user.isSubscribed()).toBeTruthy();
+  });
 });
