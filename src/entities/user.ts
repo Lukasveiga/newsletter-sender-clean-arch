@@ -19,6 +19,10 @@ export class User {
     this.active = false;
   }
 
+  public resubscribe(): void {
+    this.active = true;
+  }
+
   public isSubscribed(): boolean {
     return this.active;
   }
