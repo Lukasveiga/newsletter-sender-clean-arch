@@ -10,8 +10,30 @@ describe("User domain entity", () => {
 
     const user = User.create(userData);
 
-    console.log(user);
+    expect(user).toEqual({ name: "User Test", email: "user@email.com", active: true });
+  });
 
-    expect(user).toEqual({ name: "User Test", email: "user@email.com" });
+  test("isSubscribed should returns true if the user is subscribed", () => {
+    const userData: UserData = {
+      name: "User Test",
+      email: "user@email.com",
+    };
+
+    const user = User.create(userData);
+
+    expect(user.isSubscribed()).toBeTruthy();
+  });
+
+  test("isSubscribed should returns false if the user unsubscribe", () => {
+    const userData: UserData = {
+      name: "User Test",
+      email: "user@email.com",
+    };
+
+    const user = User.create(userData);
+
+    user.unsubscribe();
+
+    expect(user.isSubscribed()).toBeFalsy();
   });
 });
