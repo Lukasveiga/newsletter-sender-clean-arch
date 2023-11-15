@@ -40,4 +40,19 @@ describe("InMemoryUserRepository", () => {
 
     expect(user.isSubscribed()).toBeTruthy();
   });
+
+  test("Should return a list of active users", async () => {
+    const usersList: User[] = [
+      User.create({ name: "User 1", email: "user@email.com" }),
+      User.create({ name: "User 2", email: "user@email.com" }),
+      User.create({ name: "User 3", email: "user@email.com" }),
+    ];
+
+    usersList[2].unsubscribe();
+
+    const inMemoryUserRepository = new InMemoryUserRepository(usersList);
+    const users: User[] = await inMemoryUserRepository.findAllActiveUsers();
+
+    expect(users).toHaveLength(2);
+  });
 });
