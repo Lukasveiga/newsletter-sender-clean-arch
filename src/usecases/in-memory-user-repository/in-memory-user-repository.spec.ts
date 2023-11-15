@@ -10,4 +10,12 @@ describe("InMemoryUserRepository", () => {
     const existingUser = await inMemoryUserRepository.findUserByEmail(user.email);
     expect(existingUser).toStrictEqual(user);
   });
+
+  test("Should return null if user is not found by email", async () => {
+    const user: User = User.create({ name: "User", email: "user@email.com" });
+    const usersList: User[] = [];
+    const inMemoryUserRepository = new InMemoryUserRepository(usersList);
+    const existingUser = await inMemoryUserRepository.findUserByEmail(user.email);
+    expect(existingUser).toBeNull();
+  });
 });
