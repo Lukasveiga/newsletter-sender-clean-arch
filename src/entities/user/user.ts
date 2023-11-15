@@ -1,3 +1,5 @@
+import { EmailValidator } from "./utils/email-validator";
+import { NameValidation } from "./utils/name-validator";
 import { UserData } from "./user-data";
 
 export class User {
@@ -12,6 +14,8 @@ export class User {
   }
 
   static create(userData: UserData): User {
+    NameValidation.validate(userData.name);
+    EmailValidator.validate(userData.email);
     return new User(userData.name, userData.email, true);
   }
 
