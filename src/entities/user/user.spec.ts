@@ -1,7 +1,41 @@
+import { InvalidNameError } from "./errors/invalid-name";
 import { User } from "./user";
 import { UserData } from "./user-data";
 
 describe("User domain entity", () => {
+  test("Should not create a new user if invalid names are provided", () => {
+    const emptyName: string = "";
+    const shortName: string = "a";
+    let longName: string = "";
+
+    for (let i = 0; i <= 45; i++) {
+      longName += "a";
+    }
+
+    const userDataCases: UserData[] = [
+      {
+        name: emptyName,
+        email: "user@email.com",
+      },
+      {
+        name: shortName,
+        email: "user@email.com",
+      },
+      {
+        name: longName,
+        email: "user@email.com",
+      },
+    ];
+
+    for (const userDataCase of userDataCases) {
+      const user = () => {
+        User.create(userDataCase);
+      };
+
+      expect(user).toThrow(new InvalidNameError());
+    }
+  });
+
   test("Should create a new user", () => {
     const userData: UserData = {
       name: "User Test",
