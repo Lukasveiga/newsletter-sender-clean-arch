@@ -1,5 +1,5 @@
 import { UserRepository } from "./../ports/user-repository";
-import { UserData } from "../../entities/user-data";
+import { UserData } from "../../entities/user/user-data";
 import { SubscribeUser } from "./subscribe-user";
 
 export class subscribeUserOnNewsletterList implements SubscribeUser {
