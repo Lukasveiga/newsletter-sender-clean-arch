@@ -55,4 +55,13 @@ describe("InMemoryUserRepository", () => {
 
     expect(users).toHaveLength(2);
   });
+
+  test("Should change user active status", async () => {
+    const user: User = User.create({ name: "User", email: "user@email.com" });
+    const usersList: User[] = [user];
+    const inMemoryUserRepository = new InMemoryUserRepository(usersList);
+    await inMemoryUserRepository.updateActiveStatus(user.email);
+    const existingUser = await inMemoryUserRepository.findUserByEmail(user.email);
+    expect(existingUser?.isSubscribed()).toBeFalsy();
+  });
 });
