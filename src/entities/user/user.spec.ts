@@ -1,9 +1,10 @@
+import { InvalidEmailError } from "./errors/invalid-email";
 import { InvalidNameError } from "./errors/invalid-name";
 import { User } from "./user";
 import { UserData } from "./user-data";
 
 describe("User domain entity", () => {
-  test("Should not create a new user if invalid names are provided", () => {
+  test("Should not create a new user when invalid names are provided", () => {
     const emptyName: string = "";
     const shortName: string = "a";
     let longName: string = "";
@@ -34,6 +35,20 @@ describe("User domain entity", () => {
 
       expect(user).toThrow(new InvalidNameError());
     }
+  });
+
+  test("Should not create a new user when invalid email is provided", () => {
+    const invalidEmail: string = "invalid_email";
+    const userData: UserData = {
+      name: "User Test",
+      email: invalidEmail,
+    };
+
+    const user = () => {
+      User.create(userData);
+    };
+
+    expect(user).toThrow(new InvalidEmailError());
   });
 
   test("Should create a new user", () => {
