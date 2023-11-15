@@ -1,5 +1,5 @@
-import { User } from "../../entities/user";
-import { UserData } from "../../entities/user-data";
+import { User } from "../../entities/user/user";
+import { UserData } from "../../entities/user/user-data";
 import { UserNotFound } from "../errors/user-repository-error";
 import { InMemoryUserRepository } from "./in-memory-user-repository";
 
