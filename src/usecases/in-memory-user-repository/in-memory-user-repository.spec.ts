@@ -27,4 +27,17 @@ describe("InMemoryUserRepository", () => {
     const existingUser = await inMemoryUserRepository.findUserByEmail(newUser.email);
     expect(existingUser).toEqual({ ...newUser, active: true });
   });
+
+  test("Should change active status when try to add unsubscribed user", async () => {
+    const newUser: UserData = { name: "User", email: "user@email.com" };
+    const user: User = User.create(newUser);
+    user.unsubscribe();
+    expect(user.isSubscribed()).toBeFalsy();
+
+    const usersList: User[] = [user];
+    const inMemoryUserRepository = new InMemoryUserRepository(usersList);
+    await inMemoryUserRepository.add(newUser);
+
+    expect(user.isSubscribed()).toBeTruthy();
+  });
 });
