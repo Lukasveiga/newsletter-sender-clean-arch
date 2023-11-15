@@ -18,4 +18,13 @@ describe("InMemoryUserRepository", () => {
     const existingUser = await inMemoryUserRepository.findUserByEmail(user.email);
     expect(existingUser).toBeNull();
   });
+
+  test("Should add new user if user is not registered", async () => {
+    const newUser: UserData = { name: "User", email: "user@email.com" };
+    const usersList: User[] = [];
+    const inMemoryUserRepository = new InMemoryUserRepository(usersList);
+    await inMemoryUserRepository.add(newUser);
+    const existingUser = await inMemoryUserRepository.findUserByEmail(newUser.email);
+    expect(existingUser).toEqual({ ...newUser, active: true });
+  });
 });
