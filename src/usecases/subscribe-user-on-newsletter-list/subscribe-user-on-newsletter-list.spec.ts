@@ -1,3 +1,4 @@
+import { InvalidNameError } from "../../entities/user/errors/invalid-name";
 import { User } from "../../entities/user/user";
 import { UserData } from "../../entities/user/user-data";
 import { InMemoryUserRepository } from "../in-memory-user-repository/in-memory-user-repository";
@@ -45,5 +46,28 @@ describe("subscribeUserOnNewsletterList", () => {
 
     expect(subscribedUser).toStrictEqual(user);
     expect(subscribedUser?.isSubscribed()).toBeTruthy();
+  });
+
+  test("Should throw if invalid names are provided", async () => {
+    const emptyName: string = "";
+    const shortName: string = "a";
+    let longName: string = "";
+
+    for (let i = 0; i <= 45; i++) {
+      longName += "a";
+    }
+
+    const nameCases: string[] = [emptyName, shortName, longName];
+
+    const usersList: User[] = [];
+    const { sut } = makeSut(usersList);
+
+    for (const nameCase of nameCases) {
+      const response = sut.subscribeUserOnNewsletterList({
+        name: nameCase,
+        email: "valid@email.com",
+      });
+      expect(response).rejects.toThrow(new InvalidNameError());
+    }
   });
 });
