@@ -2,7 +2,7 @@ import { UserRepository } from "./../ports/user-repository";
 import { UserData } from "../../entities/user/user-data";
 import { SubscribeUser } from "./subscribe-user";
 
-export class subscribeUserOnNewsletterList implements SubscribeUser {
+export class SubscribeUserOnNewsletterList implements SubscribeUser {
   constructor(private readonly userRepository: UserRepository) {}
 
   async subscribeUserOnNewsletterList(userData: UserData): Promise<void> {

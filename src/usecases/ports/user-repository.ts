@@ -1,5 +1,5 @@
-import { User } from "../../entities/user";
-import { UserData } from "../../entities/user-data";
+import { User } from "../../entities/user/user";
+import { UserData } from "../../entities/user/user-data";
 
 export interface UserRepository {
   add(user: UserData): Promise<void>;
