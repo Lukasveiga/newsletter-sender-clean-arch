@@ -10,8 +10,8 @@ const makeSut = (userslist: User[]) => {
 };
 
 describe("subscribeUserOnNewsletterList", () => {
-  test("Should subscribe a new user to newsletter list", async () => {
-    const user: UserData = {
+  test("Should subscribe a user to newsletter list", async () => {
+    const userData: UserData = {
       name: "user",
       email: "user@email.com",
     };
@@ -19,9 +19,31 @@ describe("subscribeUserOnNewsletterList", () => {
     const usersList: User[] = [];
     const { sut, inMemoryUserRepository } = makeSut(usersList);
 
-    await sut.subscribeUserOnNewsletterList(user);
+    await sut.subscribeUserOnNewsletterList(userData);
+    const subscribedUser = await inMemoryUserRepository.findUserByEmail(userData.email);
+
+    expect(subscribedUser).toEqual({ ...userData, active: true });
+  });
+
+  test("Should change user active status if user was already registered into newsletter list but with active status equal to false", async () => {
+    const userData: UserData = {
+      name: "user",
+      email: "user@email.com",
+    };
+
+    const user: User = User.create(userData);
+
+    user.unsubscribe();
+
+    expect(user.isSubscribed()).toBeFalsy();
+
+    const usersList: User[] = [user];
+    const { sut, inMemoryUserRepository } = makeSut(usersList);
+
+    await sut.subscribeUserOnNewsletterList(userData);
     const subscribedUser = await inMemoryUserRepository.findUserByEmail(user.email);
 
-    expect(subscribedUser).toEqual({ ...user, active: true });
+    expect(subscribedUser).toStrictEqual(user);
+    expect(subscribedUser?.isSubscribed()).toBeTruthy();
   });
 });
