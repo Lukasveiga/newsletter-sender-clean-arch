@@ -1,3 +1,4 @@
+import { InvalidEmailError } from "../../entities/user/errors/invalid-email";
 import { InvalidNameError } from "../../entities/user/errors/invalid-name";
 import { User } from "../../entities/user/user";
 import { UserData } from "../../entities/user/user-data";
@@ -69,5 +70,18 @@ describe("subscribeUserOnNewsletterList", () => {
       });
       expect(response).rejects.toThrow(new InvalidNameError());
     }
+  });
+
+  test("Should throw if invalid email is provided", async () => {
+    const userData: UserData = {
+      name: "user",
+      email: "invalid_email",
+    };
+
+    const usersList: User[] = [];
+    const { sut } = makeSut(usersList);
+
+    const response = sut.subscribeUserOnNewsletterList(userData);
+    expect(response).rejects.toThrow(new InvalidEmailError());
   });
 });
