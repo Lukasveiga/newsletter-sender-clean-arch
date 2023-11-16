@@ -29,11 +29,11 @@ describe("User domain entity", () => {
     ];
 
     for (const userDataCase of userDataCases) {
-      const user = () => {
+      const error = () => {
         User.create(userDataCase);
       };
 
-      expect(user).toThrow(new InvalidNameError());
+      expect(error).toThrow(new InvalidNameError());
     }
   });
 
@@ -44,11 +44,11 @@ describe("User domain entity", () => {
       email: invalidEmail,
     };
 
-    const user = () => {
+    const error = () => {
       User.create(userData);
     };
 
-    expect(user).toThrow(new InvalidEmailError());
+    expect(error).toThrow(new InvalidEmailError());
   });
 
   test("Should create a new user", () => {

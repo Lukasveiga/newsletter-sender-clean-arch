@@ -64,11 +64,11 @@ describe("subscribeUserOnNewsletterList", () => {
     const { sut } = makeSut(usersList);
 
     for (const nameCase of nameCases) {
-      const response = sut.subscribeUserOnNewsletterList({
+      const promise = sut.subscribeUserOnNewsletterList({
         name: nameCase,
         email: "valid@email.com",
       });
-      expect(response).rejects.toThrow(new InvalidNameError());
+      expect(promise).rejects.toThrow(new InvalidNameError());
     }
   });
 
@@ -81,7 +81,7 @@ describe("subscribeUserOnNewsletterList", () => {
     const usersList: User[] = [];
     const { sut } = makeSut(usersList);
 
-    const response = sut.subscribeUserOnNewsletterList(userData);
-    expect(response).rejects.toThrow(new InvalidEmailError());
+    const promise = sut.subscribeUserOnNewsletterList(userData);
+    expect(promise).rejects.toThrow(new InvalidEmailError());
   });
 });
