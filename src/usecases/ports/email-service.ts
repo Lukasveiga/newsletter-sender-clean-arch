@@ -1,6 +1,6 @@
 export interface EmailOptions {
   readonly host: string;
-  readonly port: string;
+  readonly port: number;
   readonly user: string;
   readonly pass: string;
   readonly from: string;
