@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --passWithNoTests --noStackTrace --runInBand",
-    "test:unit": "npm test -- --watch -c ./jest-unit-config.js"
+    "test:unit": "npm test -- --watch -c ./jest-unit-config.js",
+    "test:coverage": "npm test -- --coverage"
   },
   "keywords": [],
   "author": "Lukas Veiga",

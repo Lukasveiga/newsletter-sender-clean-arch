@@ -10,5 +10,5 @@
     "moduleDetection": "force"
   },
   "include": ["src"],
-  "exclude": ["**/*.spec.ts", "**/*.ts"]
+  "exclude": ["**/*.spec.ts"]
 }
