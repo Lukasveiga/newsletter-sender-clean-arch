@@ -4,6 +4,8 @@ import { Context, HtmlCompiler } from "../ports/html-compiler";
 import { UserRepository } from "../ports/user-repository";
 import { User } from "../../entities/user/user";
 import { SendNewsletterToSubscribedUsers } from "./send-newsletter-to-subscribed-users";
+import { UserData } from "../../entities/user/user-data";
+import { EmailServiceError } from "../errors/email-service-error";
 
 const emailOptions: EmailOptions = {
   host: "host_test",
@@ -17,18 +19,19 @@ const emailOptions: EmailOptions = {
 };
 
 class EmailServiceSpy implements EmailService {
-  send(options: EmailOptions): Promise<void> {
-    throw new Error("Method not implemented.");
+  static sendFuctionWasCalled = false;
+  async send(options: EmailOptions): Promise<void> {
+    EmailServiceSpy.sendFuctionWasCalled = true;
   }
 }
 
 class HtmlCompilerSpy implements HtmlCompiler {
-  compile(path: string, context: Context): Promise<string> {
-    throw new Error("Method not implemented.");
+  async compile(path: string, context: Context): Promise<string> {
+    return "";
   }
 }
 
-const makeSut = (userList: User[]): { sut: SendNewsletterToSubscribedUsers } => {
+const makeSut = (userList: User[]) => {
   const inMemoryUserRpository: UserRepository = new InMemoryUserRepository(userList);
   const emailServiceSpy = new EmailServiceSpy();
   const htmlCompilerSpy = new HtmlCompilerSpy();
@@ -38,9 +41,59 @@ const makeSut = (userList: User[]): { sut: SendNewsletterToSubscribedUsers } => 
     emailOptions,
     htmlCompilerSpy
   );
-  return { sut };
+  return { sut, emailServiceSpy };
 };
 
 describe("SendNewsletterToSubscribedUsers", () => {
-  test("", () => {});
+  test("Should not send email with newsletter if there are no subscribed users", async () => {
+    const userList: User[] = [];
+    const path: string = "test_path";
+    const context: Context = {
+      title: "title_test",
+      username: "username_test",
+      text: "text_test",
+    };
+
+    const { sut } = makeSut(userList);
+    await sut.sendNewsletterToSubscribedUsers(path, context);
+
+    expect(EmailServiceSpy.sendFuctionWasCalled).toBeFalsy();
+  });
+
+  test("Should send email with newsletter", async () => {
+    const userData: UserData = { name: "name_test", email: "email_test@email.com" };
+    const userList: User[] = [User.create(userData)];
+    const path: string = "test_path";
+    const context: Context = {
+      title: "title_test",
+      username: "username_test",
+      text: "text_test",
+    };
+
+    const { sut } = makeSut(userList);
+    await sut.sendNewsletterToSubscribedUsers(path, context);
+
+    expect(EmailServiceSpy.sendFuctionWasCalled).toBeTruthy();
+  });
+
+  test("Should throw if send method throws", async () => {
+    const userData: UserData = { name: "name_test", email: "email_test@email.com" };
+    const userList: User[] = [User.create(userData)];
+    const path: string = "test_path";
+    const context: Context = {
+      title: "title_test",
+      username: "username_test",
+      text: "text_test",
+    };
+
+    const { sut, emailServiceSpy } = makeSut(userList);
+
+    jest.spyOn(emailServiceSpy, "send").mockImplementation(() => {
+      throw new Error();
+    });
+
+    const error = sut.sendNewsletterToSubscribedUsers(path, context);
+
+    expect(error).rejects.toThrow(EmailServiceError);
+  });
 });
