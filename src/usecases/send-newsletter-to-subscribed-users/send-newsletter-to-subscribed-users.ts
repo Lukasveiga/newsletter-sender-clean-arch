@@ -20,7 +20,7 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
       return;
     }
 
-    activeUsers.forEach(async (activeUser) => {
+    for (let activeUser of activeUsers) {
       const contextOptions: Context = {
         title: context.title,
         username: activeUser.name,
@@ -45,6 +45,6 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
       } catch (error) {
         throw new EmailServiceError();
       }
-    });
+    }
   }
 }
