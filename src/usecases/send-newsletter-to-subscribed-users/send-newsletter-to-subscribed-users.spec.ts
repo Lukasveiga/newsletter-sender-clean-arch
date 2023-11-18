@@ -92,8 +92,8 @@ describe("SendNewsletterToSubscribedUsers", () => {
       throw new Error();
     });
 
-    const error = sut.sendNewsletterToSubscribedUsers(path, context);
+    const promise = sut.sendNewsletterToSubscribedUsers(path, context);
 
-    expect(error).rejects.toThrow(EmailServiceError);
+    expect(promise).rejects.toThrow(EmailServiceError);
   });
 });
