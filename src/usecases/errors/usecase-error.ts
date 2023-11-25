@@ -1,3 +1,5 @@
-export interface UsecaseError {
-  message: string;
+export class UsecaseError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
 }
