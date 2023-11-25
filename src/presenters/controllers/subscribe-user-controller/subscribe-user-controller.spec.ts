@@ -72,4 +72,25 @@ describe("SubscribeUserController", () => {
     expect(httpRespose.statusCode).toEqual(400);
     expect(httpRespose.body).toEqual("User email is invalid");
   });
+
+  test("Should return status code 500 when subscribeUserOnNewsletterList throws unexpected error", async () => {
+    const httpRequest: HttpRequest = {
+      body: {
+        name: "any_name",
+        email: "invalid_email",
+      },
+    };
+
+    const { sut, subscribeUserOnNewsletterListSpy } = makeSut();
+
+    jest
+      .spyOn(subscribeUserOnNewsletterListSpy, "subscribeUserOnNewsletterList")
+      .mockImplementation(() => {
+        throw new Error();
+      });
+
+    const httpRespose = await sut.subscribe(httpRequest);
+    expect(httpRespose.statusCode).toEqual(500);
+    expect(httpRespose.body).toEqual("Internal Server Error");
+  });
 });
