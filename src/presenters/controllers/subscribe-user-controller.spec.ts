@@ -1,9 +1,9 @@
 import { SubscribeUserController } from "./subscribe-user-controller";
-import { SubscribeUserOnNewsletterList } from "../../../usecases/subscribe-user-on-newsletter-list/subscribe-user-on-newsletter-list";
-import { InMemoryUserRepository } from "../../../usecases/in-memory-user-repository/in-memory-user-repository";
-import { User } from "../../../entities/user/user";
-import { HttpRequest } from "../ports/http";
-import { UserData } from "../../../entities/user/user-data";
+import { SubscribeUserOnNewsletterList } from "../../usecases/subscribe-user-on-newsletter-list/subscribe-user-on-newsletter-list";
+import { InMemoryUserRepository } from "../../usecases/in-memory-user-repository/in-memory-user-repository";
+import { User } from "../../entities/user/user";
+import { HttpRequest } from "./ports/http";
+import { UserData } from "../../entities/user/user-data";
 
 const makeSut = () => {
   const userlist: User[] = [];

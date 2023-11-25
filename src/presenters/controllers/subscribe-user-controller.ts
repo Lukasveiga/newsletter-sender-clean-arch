@@ -1,9 +1,9 @@
-import { DomainError } from "../../../entities/user/errors/domain-error";
-import { UserData } from "../../../entities/user/user-data";
-import { SubscribeUser } from "../../../usecases/subscribe-user-on-newsletter-list/subscribe-user";
-import { MissingParamError } from "../errors/missing-param-error";
-import { badRequest, ok, serverError } from "../helpers/http-helper";
-import { HttpRequest, HttpResponse } from "../ports/http";
+import { DomainError } from "../../entities/user/errors/domain-error";
+import { UserData } from "../../entities/user/user-data";
+import { SubscribeUser } from "../../usecases/subscribe-user-on-newsletter-list/subscribe-user";
+import { MissingParamError } from "./errors/missing-param-error";
+import { badRequest, ok, serverError } from "./helpers/http-helper";
+import { HttpRequest, HttpResponse } from "./ports/http";
 
 export class SubscribeUserController {
   constructor(private subscribeUser: SubscribeUser) {}
