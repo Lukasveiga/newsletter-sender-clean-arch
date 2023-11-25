@@ -1,3 +1,5 @@
-export interface DomainError {
-  message: string;
+export class DomainError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
 }
