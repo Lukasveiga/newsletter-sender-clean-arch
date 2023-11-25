@@ -6,14 +6,16 @@ import { User } from "../../entities/user/user";
 const makeSut = () => {
   const userList: User[] = [User.create({ name: "test_name", email: "test_email@email.com" })];
   const inMemoryUserRepository = new InMemoryUserRepository(userList);
-  const unsubscribeUser = new UnsubscribeUserFromNewsletterList(inMemoryUserRepository);
-  const sut = new UnsubscribeUserController(unsubscribeUser);
+  const unsubscribeUserFromNewsletterList = new UnsubscribeUserFromNewsletterList(
+    inMemoryUserRepository
+  );
+  const sut = new UnsubscribeUserController(unsubscribeUserFromNewsletterList);
 
-  return { sut, unsubscribeUser };
+  return { sut, unsubscribeUserFromNewsletterList };
 };
 
 describe("UnsubscribeUserController", () => {
-  test("Should return status code 400 if email is not provided", async () => {
+  test("Should return status code 400 when email is not provided", async () => {
     const httpRequest = {
       body: {
         email: "",
@@ -26,7 +28,7 @@ describe("UnsubscribeUserController", () => {
     expect(httpResponse.body).toEqual("email is required");
   });
 
-  test("Should return status code 404 if user is not found", async () => {
+  test("Should return status code 404 when user is not found", async () => {
     const httpRequest = {
       body: {
         email: "any_email",
@@ -37,5 +39,25 @@ describe("UnsubscribeUserController", () => {
     const httpResponse = await sut.unsubscribe(httpRequest);
     expect(httpResponse.statusCode).toEqual(404);
     expect(httpResponse.body).toEqual("User not found");
+  });
+
+  test("Should return status code 500 when UnsubscribeUserFromNewsletterList throws unexpected error", async () => {
+    const httpRequest = {
+      body: {
+        email: "any_email",
+      },
+    };
+
+    const { sut, unsubscribeUserFromNewsletterList } = makeSut();
+
+    jest
+      .spyOn(unsubscribeUserFromNewsletterList, "unsubscribeUserFromNewsletterList")
+      .mockImplementation(() => {
+        throw new Error();
+      });
+
+    const httpResponse = await sut.unsubscribe(httpRequest);
+    expect(httpResponse.statusCode).toEqual(500);
+    expect(httpResponse.body).toEqual("Internal Server Error");
   });
 });
