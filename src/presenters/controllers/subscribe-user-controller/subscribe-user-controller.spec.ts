@@ -18,7 +18,7 @@ describe("SubscribeUserController", () => {
   test("Should return status code 400 when user name is not provided", async () => {
     const httpRequest: HttpRequest = {
       body: {
-        email: "any_email@emailc.com",
+        email: "any_email@email.com",
       },
     };
 
@@ -27,5 +27,19 @@ describe("SubscribeUserController", () => {
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(400);
     expect(httpRespose.body).toEqual("name is required");
+  });
+
+  test("Should return status code 400 when user email is not provided", async () => {
+    const httpRequest: HttpRequest = {
+      body: {
+        name: "any_name",
+      },
+    };
+
+    const { sut } = makeSut();
+
+    const httpRespose = await sut.subscribe(httpRequest);
+    expect(httpRespose.statusCode).toEqual(400);
+    expect(httpRespose.body).toEqual("email is required");
   });
 });
