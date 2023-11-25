@@ -25,4 +25,17 @@ describe("UnsubscribeUserController", () => {
     expect(httpResponse.statusCode).toEqual(400);
     expect(httpResponse.body).toEqual("email is required");
   });
+
+  test("Should return status code 404 if user is not found", async () => {
+    const httpRequest = {
+      body: {
+        email: "any_email",
+      },
+    };
+
+    const { sut } = makeSut();
+    const httpResponse = await sut.unsubscribe(httpRequest);
+    expect(httpResponse.statusCode).toEqual(404);
+    expect(httpResponse.body).toEqual("User not found");
+  });
 });
