@@ -57,4 +57,19 @@ describe("SubscribeUserController", () => {
     expect(httpRespose.statusCode).toEqual(400);
     expect(httpRespose.body).toEqual("User name is invalid");
   });
+
+  test("Should return status code 400 when invalid user email is provided", async () => {
+    const httpRequest: HttpRequest = {
+      body: {
+        name: "any_name",
+        email: "invalid_email",
+      },
+    };
+
+    const { sut } = makeSut();
+
+    const httpRespose = await sut.subscribe(httpRequest);
+    expect(httpRespose.statusCode).toEqual(400);
+    expect(httpRespose.body).toEqual("User email is invalid");
+  });
 });
