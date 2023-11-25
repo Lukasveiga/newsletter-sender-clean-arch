@@ -3,6 +3,7 @@ import { SubscribeUserOnNewsletterList } from "../../../usecases/subscribe-user-
 import { InMemoryUserRepository } from "../../../usecases/in-memory-user-repository/in-memory-user-repository";
 import { User } from "../../../entities/user/user";
 import { HttpRequest } from "../ports/http";
+import { UserData } from "../../../entities/user/user-data";
 
 const makeSut = () => {
   const userlist: User[] = [];
@@ -44,9 +45,11 @@ describe("SubscribeUserController", () => {
   });
 
   test("Should return status code 400 when invalid user name is provided", async () => {
+    const invalidName = "c";
+
     const httpRequest: HttpRequest = {
       body: {
-        name: "c",
+        name: invalidName,
         email: "any_email@email.com",
       },
     };
@@ -77,7 +80,7 @@ describe("SubscribeUserController", () => {
     const httpRequest: HttpRequest = {
       body: {
         name: "any_name",
-        email: "invalid_email",
+        email: "any_email@email.com",
       },
     };
 
@@ -92,5 +95,22 @@ describe("SubscribeUserController", () => {
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(500);
     expect(httpRespose.body).toEqual("Internal Server Error");
+  });
+
+  test("Should return status code 200 when valid params are provided", async () => {
+    const userData: UserData = {
+      name: "valid_name",
+      email: "valid_email@email.com",
+    };
+
+    const httpRequest: HttpRequest = {
+      body: userData,
+    };
+
+    const { sut } = makeSut();
+
+    const httpRespose = await sut.subscribe(httpRequest);
+    expect(httpRespose.statusCode).toEqual(200);
+    expect(httpRespose.body).toEqual(userData);
   });
 });
