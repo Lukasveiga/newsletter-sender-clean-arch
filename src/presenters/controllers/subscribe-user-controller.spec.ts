@@ -8,11 +8,9 @@ import { UserData } from "../../entities/user/user-data";
 const makeSut = () => {
   const userlist: User[] = [];
   const inMemoryUserRepository = new InMemoryUserRepository(userlist);
-  const subscribeUserOnNewsletterListSpy = new SubscribeUserOnNewsletterList(
-    inMemoryUserRepository
-  );
-  const sut = new SubscribeUserController(subscribeUserOnNewsletterListSpy);
-  return { sut, subscribeUserOnNewsletterListSpy };
+  const subscribeUserOnNewsletterList = new SubscribeUserOnNewsletterList(inMemoryUserRepository);
+  const sut = new SubscribeUserController(subscribeUserOnNewsletterList);
+  return { sut, subscribeUserOnNewsletterList };
 };
 
 describe("SubscribeUserController", () => {
@@ -84,10 +82,10 @@ describe("SubscribeUserController", () => {
       },
     };
 
-    const { sut, subscribeUserOnNewsletterListSpy } = makeSut();
+    const { sut, subscribeUserOnNewsletterList } = makeSut();
 
     jest
-      .spyOn(subscribeUserOnNewsletterListSpy, "subscribeUserOnNewsletterList")
+      .spyOn(subscribeUserOnNewsletterList, "subscribeUserOnNewsletterList")
       .mockImplementation(() => {
         throw new Error();
       });
