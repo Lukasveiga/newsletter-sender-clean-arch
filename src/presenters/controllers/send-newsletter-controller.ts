@@ -15,5 +15,3 @@ export class SendNewsletterController {
     }
   }
 }
-
-console.log(__dirname);
