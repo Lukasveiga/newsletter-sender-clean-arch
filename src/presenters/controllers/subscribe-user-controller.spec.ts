@@ -25,7 +25,7 @@ describe("SubscribeUserController", () => {
 
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(400);
-    expect(httpRespose.body).toEqual("name is required");
+    expect(httpRespose.body.message).toEqual("name is required");
   });
 
   test("Should return status code 400 when user email is not provided", async () => {
@@ -39,7 +39,7 @@ describe("SubscribeUserController", () => {
 
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(400);
-    expect(httpRespose.body).toEqual("email is required");
+    expect(httpRespose.body.message).toEqual("email is required");
   });
 
   test("Should return status code 400 when invalid user name is provided", async () => {
@@ -56,7 +56,7 @@ describe("SubscribeUserController", () => {
 
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(400);
-    expect(httpRespose.body).toEqual("User name is invalid");
+    expect(httpRespose.body.message).toEqual("User name is invalid");
   });
 
   test("Should return status code 400 when invalid user email is provided", async () => {
@@ -71,7 +71,7 @@ describe("SubscribeUserController", () => {
 
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(400);
-    expect(httpRespose.body).toEqual("User email is invalid");
+    expect(httpRespose.body.message).toEqual("User email is invalid");
   });
 
   test("Should return status code 500 when subscribeUserOnNewsletterList throws unexpected error", async () => {
@@ -92,7 +92,7 @@ describe("SubscribeUserController", () => {
 
     const httpRespose = await sut.subscribe(httpRequest);
     expect(httpRespose.statusCode).toEqual(500);
-    expect(httpRespose.body).toEqual("Internal Server Error");
+    expect(httpRespose.body.message).toEqual("Internal Server Error");
   });
 
   test("Should return status code 200 when valid params are provided", async () => {

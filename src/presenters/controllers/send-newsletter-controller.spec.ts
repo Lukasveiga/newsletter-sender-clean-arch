@@ -48,7 +48,7 @@ const makeSut = () => {
 describe("SendNewsletterController", () => {
   test("Should retruns status code 200 when the newsletter is sent successfully", async () => {
     const { sut } = makeSut();
-    const httpResponse = await sut.send({});
+    const httpResponse = await sut.send();
     expect(httpResponse.statusCode).toEqual(200);
     expect(httpResponse.body).toEqual("Newsletters sent successfully");
   });
@@ -62,8 +62,8 @@ describe("SendNewsletterController", () => {
         throw new Error();
       });
 
-    const httpResponse = await sut.send({});
+    const httpResponse = await sut.send();
     expect(httpResponse.statusCode).toEqual(500);
-    expect(httpResponse.body).toEqual("Internal Server Error");
+    expect(httpResponse.body.message).toEqual("Internal Server Error");
   });
 });

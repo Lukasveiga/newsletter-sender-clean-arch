@@ -27,7 +27,7 @@ describe("UnsubscribeUserController", () => {
     const { sut } = makeSut();
     const httpResponse = await sut.unsubscribe(httpRequest);
     expect(httpResponse.statusCode).toEqual(400);
-    expect(httpResponse.body).toEqual("email is required");
+    expect(httpResponse.body.message).toEqual("email is required");
   });
 
   test("Should return status code 404 when user is not found", async () => {
@@ -40,7 +40,7 @@ describe("UnsubscribeUserController", () => {
     const { sut } = makeSut();
     const httpResponse = await sut.unsubscribe(httpRequest);
     expect(httpResponse.statusCode).toEqual(404);
-    expect(httpResponse.body).toEqual("User not found");
+    expect(httpResponse.body.message).toEqual("User not found");
   });
 
   test("Should return status code 500 when UnsubscribeUserFromNewsletterList throws unexpected error", async () => {
@@ -60,7 +60,7 @@ describe("UnsubscribeUserController", () => {
 
     const httpResponse = await sut.unsubscribe(httpRequest);
     expect(httpResponse.statusCode).toEqual(500);
-    expect(httpResponse.body).toEqual("Internal Server Error");
+    expect(httpResponse.body.message).toEqual("Internal Server Error");
   });
 
   test("Should return status code 200 when user is successfully unsubscribed", async () => {
