@@ -13,7 +13,7 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
     private readonly htmlCompiler: HtmlCompiler
   ) {}
 
-  async sendNewsletterToSubscribedUsers(path: string, context: Context): Promise<void> {
+  async sendNewsletterToSubscribedUsers(path: string): Promise<void> {
     const activeUsers: User[] = await this.userRepository.findAllActiveUsers();
 
     if (activeUsers.length < 1) {
@@ -22,9 +22,7 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
 
     for (let activeUser of activeUsers) {
       const contextOptions: Context = {
-        title: context.title,
         username: activeUser.name,
-        text: context.text,
       };
 
       const htmlString = await this.htmlCompiler.compile(path, contextOptions);

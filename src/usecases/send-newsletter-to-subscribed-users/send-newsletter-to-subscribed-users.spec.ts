@@ -48,14 +48,9 @@ describe("SendNewsletterToSubscribedUsers", () => {
   test("Should not send email with newsletter if there are no subscribed users", async () => {
     const userList: User[] = [];
     const path: string = "test_path";
-    const context: Context = {
-      title: "title_test",
-      username: "username_test",
-      text: "text_test",
-    };
 
     const { sut } = makeSut(userList);
-    await sut.sendNewsletterToSubscribedUsers(path, context);
+    await sut.sendNewsletterToSubscribedUsers(path);
 
     expect(EmailServiceSpy.sendFuctionWasCalled).toBeFalsy();
   });
@@ -64,14 +59,9 @@ describe("SendNewsletterToSubscribedUsers", () => {
     const userData: UserData = { name: "name_test", email: "email_test@email.com" };
     const userList: User[] = [User.create(userData)];
     const path: string = "test_path";
-    const context: Context = {
-      title: "title_test",
-      username: "username_test",
-      text: "text_test",
-    };
 
     const { sut } = makeSut(userList);
-    await sut.sendNewsletterToSubscribedUsers(path, context);
+    await sut.sendNewsletterToSubscribedUsers(path);
 
     expect(EmailServiceSpy.sendFuctionWasCalled).toBeTruthy();
   });
@@ -80,11 +70,6 @@ describe("SendNewsletterToSubscribedUsers", () => {
     const userData: UserData = { name: "name_test", email: "email_test@email.com" };
     const userList: User[] = [User.create(userData)];
     const path: string = "test_path";
-    const context: Context = {
-      title: "title_test",
-      username: "username_test",
-      text: "text_test",
-    };
 
     const { sut, emailServiceSpy } = makeSut(userList);
 
@@ -92,7 +77,7 @@ describe("SendNewsletterToSubscribedUsers", () => {
       throw new Error();
     });
 
-    const promise = sut.sendNewsletterToSubscribedUsers(path, context);
+    const promise = sut.sendNewsletterToSubscribedUsers(path);
 
     expect(promise).rejects.toThrow(EmailServiceError);
   });

@@ -1,7 +1,5 @@
 export type Context = {
-  title: string;
-  username: string;
-  text: string;
+  username?: string;
 };
 
 export interface HtmlCompiler {
