@@ -4,6 +4,8 @@ import { EmailOptions, EmailService } from "../ports/email-service";
 import { Context, HtmlCompiler } from "../ports/html-compiler";
 import { UserRepository } from "../ports/user-repository";
 import { SendNewsletter } from "./send-newsletter";
+import { UsecaseError } from "../errors/usecase-error";
+import { HtmlCompilerError } from "../errors/html-compiler-error";
 
 export class SendNewsletterToSubscribedUsers implements SendNewsletter {
   constructor(
@@ -25,23 +27,29 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
         username: activeUser.name,
       };
 
-      const htmlString = await this.htmlCompiler.compile(path, contextOptions);
-
-      const options = {
-        host: this.emailOptions.host,
-        port: this.emailOptions.port,
-        user: this.emailOptions.user,
-        pass: this.emailOptions.pass,
-        from: this.emailOptions.from,
-        to: `${activeUser.name} <${activeUser.email}>`,
-        subject: this.emailOptions.subject,
-        html: htmlString,
-      };
-
       try {
+        const htmlString = await this.htmlCompiler.compile(path, contextOptions);
+
+        const options = {
+          host: this.emailOptions.host,
+          port: this.emailOptions.port,
+          user: this.emailOptions.user,
+          pass: this.emailOptions.pass,
+          from: this.emailOptions.from,
+          to: `${activeUser.name} <${activeUser.email}>`,
+          subject: this.emailOptions.subject,
+          html: htmlString,
+        };
+
         this.emailService.send(options);
       } catch (error) {
-        throw new EmailServiceError();
+        let catchError = new Error();
+        if (error instanceof UsecaseError) {
+          catchError =
+            error.name === "EmailServiceError" ? new EmailServiceError() : new HtmlCompilerError();
+        }
+
+        throw catchError;
       }
     }
   }

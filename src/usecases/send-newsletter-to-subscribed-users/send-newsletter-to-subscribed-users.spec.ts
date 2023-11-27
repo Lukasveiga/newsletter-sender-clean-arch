@@ -6,6 +6,7 @@ import { User } from "../../entities/user/user";
 import { SendNewsletterToSubscribedUsers } from "./send-newsletter-to-subscribed-users";
 import { UserData } from "../../entities/user/user-data";
 import { EmailServiceError } from "../errors/email-service-error";
+import { HtmlCompilerError } from "../errors/html-compiler-error";
 
 const emailOptions: EmailOptions = {
   host: "host_test",
@@ -41,7 +42,7 @@ const makeSut = (userList: User[]) => {
     emailOptions,
     htmlCompilerSpy
   );
-  return { sut, emailServiceSpy };
+  return { sut, emailServiceSpy, htmlCompilerSpy };
 };
 
 describe("SendNewsletterToSubscribedUsers", () => {
@@ -74,11 +75,27 @@ describe("SendNewsletterToSubscribedUsers", () => {
     const { sut, emailServiceSpy } = makeSut(userList);
 
     jest.spyOn(emailServiceSpy, "send").mockImplementation(() => {
-      throw new Error();
+      throw new EmailServiceError();
     });
 
     const promise = sut.sendNewsletterToSubscribedUsers(path);
 
     expect(promise).rejects.toThrow(EmailServiceError);
+  });
+
+  test("Should throw if HtmlCompiler method throws", async () => {
+    const userData: UserData = { name: "name_test", email: "email_test@email.com" };
+    const userList: User[] = [User.create(userData)];
+    const path: string = "test_path";
+
+    const { sut, htmlCompilerSpy } = makeSut(userList);
+
+    jest.spyOn(htmlCompilerSpy, "compile").mockImplementation(() => {
+      throw new HtmlCompilerError();
+    });
+
+    const promise = sut.sendNewsletterToSubscribedUsers(path);
+
+    expect(promise).rejects.toThrow(HtmlCompilerError);
   });
 });
