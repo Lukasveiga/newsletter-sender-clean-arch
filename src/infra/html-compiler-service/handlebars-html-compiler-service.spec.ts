@@ -5,27 +5,20 @@ import { HandlebarsHtmlCompilerService } from "./handlebars-html-compiler-servic
 const sut = new HandlebarsHtmlCompilerService();
 
 const path = "./test_path";
-const context: Context = {};
+const context: Context = { username: "username_test" };
 
-const compilerMock = jest.fn().mockReturnValue("compiler");
-jest.mock("handlebars", () => ({
-  compile: jest.fn().mockImplementation(() => ({
-    compiler: compilerMock,
-  })),
+const readFileMock = jest.fn().mockReturnValue("");
+jest.mock("fs", () => ({
+  readFile: readFileMock,
 }));
-
-const handlebars = require("handlebars");
-
-beforeEach(() => {
-  compilerMock.mockClear();
-  handlebars.compile.mockClear();
-});
 
 describe("HandlebarsHtmlCompilerService", () => {
   test("Should throw if handlebars throws", async () => {
-    compilerMock.mockImplementationOnce(() => {
-      throw new Error();
-    });
+    jest.mock("handlebars", () => ({
+      compile: jest.fn().mockImplementation(() => {
+        throw new Error();
+      }),
+    }));
 
     const promise = sut.compile(path, context);
     expect(promise).rejects.toThrow(new HtmlCompilerError());
