@@ -3,5 +3,5 @@ export type Context = {
 };
 
 export interface HtmlCompiler {
-  compile(path: string, context: Context): Promise<string>;
+  compileHtml(path: string, context: Context): Promise<string>;
 }
