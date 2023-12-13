@@ -21,4 +21,15 @@ describe("HandlebarsHtmlCompilerService", () => {
     const promise = sut.compileHtml(path, context);
     expect(promise).rejects.toThrow(new HtmlCompilerError());
   });
+
+  test("Should return compiled html", async () => {
+    fs.readFile = jest.fn().mockResolvedValue(Buffer.from(""));
+
+    handlebars.compile = jest.fn().mockReturnValue((context: Context) => {
+      return `<h1>${context.username}</h1>`;
+    });
+
+    const result = await sut.compileHtml(path, context);
+    expect(result).toEqual("<h1>username_test</h1>");
+  });
 });
