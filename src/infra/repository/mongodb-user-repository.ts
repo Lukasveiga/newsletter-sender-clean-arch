@@ -9,7 +9,12 @@ export class MongoDBUserRepository implements UserRepository {
     const userCollection = MongoTools.getCollection("users");
     const existingUser = await this.findUserByEmail(user.email);
 
-    if (existingUser) {
+    if (!existingUser) {
+      await userCollection.insertOne(User.create(user));
+      return;
+    }
+
+    if (existingUser && !existingUser.isSubscribed) {
       existingUser.resubscribe();
       userCollection.updateOne(
         { email: existingUser.email },
@@ -17,8 +22,6 @@ export class MongoDBUserRepository implements UserRepository {
       );
       return;
     }
-
-    await userCollection.insertOne(User.create(user));
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
