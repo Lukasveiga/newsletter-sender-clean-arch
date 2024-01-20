@@ -24,4 +24,12 @@ describe("MongoDB User Repository", () => {
     expect(savedUser?.email).toEqual("test_email@email.com");
     expect(savedUser?.isSubscribed()).toBeTruthy();
   });
+
+  test("Should update active status to false", async () => {
+    const sut = new MongoDBUserRepository();
+    await sut.add({ name: "test_name", email: "test_email@email.com" });
+    await sut.updateActiveStatus("test_email@email.com");
+    const savedUser = await sut.findUserByEmail("test_email@email.com");
+    expect(savedUser?.isSubscribed()).toBeFalsy();
+  });
 });
