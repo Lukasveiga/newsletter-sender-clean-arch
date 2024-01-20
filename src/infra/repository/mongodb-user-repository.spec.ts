@@ -22,5 +22,6 @@ describe("MongoDB User Repository", () => {
     expect(savedUser).not.toBeNull();
     expect(savedUser?.name).toEqual("test_name");
     expect(savedUser?.email).toEqual("test_email@email.com");
+    expect(savedUser?.isSubscribed()).toBeTruthy();
   });
 });
