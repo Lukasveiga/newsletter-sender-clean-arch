@@ -1,18 +1,45 @@
 import { User } from "../../entities/user/user";
 import { UserData } from "../../entities/user/user-data";
 import { UserRepository } from "../../usecases/ports/user-repository";
+import { MongoTools } from "./tools/mongo-tools";
+import { UserDataObjectID } from "./tools/user-data-objectid";
 
 export class MongoDBUserRepository implements UserRepository {
-  add(user: UserData): Promise<void> {
-    throw new Error("Method not implemented.");
+  async add(user: UserData): Promise<void> {
+    const userCollection = MongoTools.getCollection("users");
+    const existingUser = await this.findUserByEmail(user.email);
+
+    if (existingUser) {
+      existingUser.resubscribe();
+      userCollection.updateOne(
+        { email: existingUser.email },
+        { $set: { active: existingUser.isSubscribed } }
+      );
+      return;
+    }
+
+    await userCollection.insertOne(User.create(user));
   }
-  findUserByEmail(email: string): Promise<User | null> {
-    throw new Error("Method not implemented.");
+
+  async findUserByEmail(email: string): Promise<User | null> {
+    const userCollection = MongoTools.getCollection("users");
+    const user = (await userCollection.findOne({ email: email })) as UserDataObjectID;
+    return user != null ? User.create(user) : null;
   }
-  findAllActiveUsers(): Promise<User[]> {
-    throw new Error("Method not implemented.");
+
+  async findAllActiveUsers(): Promise<User[]> {
+    const userCollection = MongoTools.getCollection("users");
+    const result = (await userCollection.find({ active: true }).toArray()) as UserDataObjectID[];
+    return result.map((u) => {
+      return User.create(u);
+    });
   }
-  updateActiveStatus(email: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async updateActiveStatus(email: string): Promise<void> {
+    const userCollection = MongoTools.getCollection("users");
+    const existingUser = await this.findUserByEmail(email);
+    existingUser?.unsubscribe();
+
+    userCollection.updateOne({ email: email }, { $set: { active: existingUser?.isSubscribed } });
   }
 }
