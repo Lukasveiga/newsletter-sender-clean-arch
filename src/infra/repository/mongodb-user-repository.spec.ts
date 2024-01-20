@@ -18,6 +18,9 @@ describe("MongoDB User Repository", () => {
   test("Should add a user", async () => {
     const sut = new MongoDBUserRepository();
     await sut.add({ name: "test_name", email: "test_email@email.com" });
-    expect(await sut.findUserByEmail("test_email@email.com")).not.toBeNull();
+    const savedUser = await sut.findUserByEmail("test_email@email.com");
+    expect(savedUser).not.toBeNull();
+    expect(savedUser?.name).toEqual("test_name");
+    expect(savedUser?.email).toEqual("test_email@email.com");
   });
 });
