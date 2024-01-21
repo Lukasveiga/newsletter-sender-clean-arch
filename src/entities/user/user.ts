@@ -7,16 +7,16 @@ export class User {
   public readonly email: string;
   private active: boolean;
 
-  private constructor(name: string, email: string, active: boolean) {
+  private constructor(name: string, email: string, active?: boolean) {
     this.name = name;
     this.email = email;
-    this.active = active;
+    this.active = active ?? true;
   }
 
   static create(userData: UserData): User {
     NameValidation.validate(userData.name);
     EmailValidator.validate(userData.email);
-    return new User(userData.name, userData.email, true);
+    return new User(userData.name, userData.email, userData.active);
   }
 
   public unsubscribe(): void {

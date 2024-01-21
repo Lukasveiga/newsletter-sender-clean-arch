@@ -1,35 +1,36 @@
 import { MongoDBUserRepository } from "./mongodb-user-repository";
 import { MongoTools } from "./tools/mongo-tools";
-import "dotenv/config";
+import { UserData } from "../../entities/user/user-data";
+
+const sut = new MongoDBUserRepository();
 
 describe("MongoDB User Repository", () => {
   beforeAll(async () => {
-    await MongoTools.connect(process.env.MONGO_URL as string);
+    await MongoTools.connect(global.__MONGO_URI__);
+  });
+  beforeEach(async () => {
+    MongoTools.clearCollection("users");
   });
 
   afterAll(async () => {
     await MongoTools.disconnect();
   });
 
-  beforeEach(async () => {
-    MongoTools.clearCollection("users");
-  });
-
   test("Should add a user", async () => {
-    const sut = new MongoDBUserRepository();
-    await sut.add({ name: "test_name", email: "test_email@email.com" });
-    const savedUser = await sut.findUserByEmail("test_email@email.com");
-    expect(savedUser).not.toBeNull();
+    const mockUser: UserData = { name: "test_name", email: "test_email@email.com" };
+    await sut.add(mockUser);
+    const savedUser = await sut.findUserByEmail(mockUser.email);
+
     expect(savedUser?.name).toEqual("test_name");
     expect(savedUser?.email).toEqual("test_email@email.com");
     expect(savedUser?.isSubscribed()).toBeTruthy();
   });
 
   test("Should update active status to false", async () => {
-    const sut = new MongoDBUserRepository();
-    await sut.add({ name: "test_name", email: "test_email@email.com" });
-    await sut.updateActiveStatus("test_email@email.com");
-    const savedUser = await sut.findUserByEmail("test_email@email.com");
+    const mockUser: UserData = { name: "test_name", email: "test_email@email.com" };
+    await sut.add(mockUser);
+    await sut.updateActiveStatus(mockUser.email);
+    const savedUser = await sut.findUserByEmail(mockUser.email);
     expect(savedUser?.isSubscribed()).toBeFalsy();
   });
 });

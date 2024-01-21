@@ -15,6 +15,7 @@ export class MongoDBUserRepository implements UserRepository {
     }
 
     if (existingUser && !existingUser.isSubscribed) {
+      const userCollection = MongoTools.getCollection("users");
       existingUser.resubscribe();
       userCollection.updateOne(
         { email: existingUser.email },
@@ -41,8 +42,12 @@ export class MongoDBUserRepository implements UserRepository {
   async updateActiveStatus(email: string): Promise<void> {
     const userCollection = MongoTools.getCollection("users");
     const existingUser = await this.findUserByEmail(email);
+
     existingUser?.unsubscribe();
 
-    userCollection.updateOne({ email: email }, { $set: { active: existingUser?.isSubscribed } });
+    await userCollection.updateOne(
+      { email: existingUser?.email },
+      { $set: { active: existingUser?.isSubscribed() } }
+    );
   }
 }
