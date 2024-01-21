@@ -33,4 +33,25 @@ describe("MongoDB User Repository", () => {
     const savedUser = await sut.findUserByEmail(mockUser.email);
     expect(savedUser?.isSubscribed()).toBeFalsy();
   });
+
+  test("Should return a list of active users", async () => {
+    const mockUserList: UserData[] = [
+      { name: "test_name", email: "test_email@email.com" },
+      { name: "test_name", email: "test_email1@email.com" },
+      { name: "test_name", email: "test_email2@email.com", active: false },
+    ];
+
+    for (let mockUser of mockUserList) {
+      await sut.add(mockUser);
+    }
+
+    const activeUsersList = await sut.findAllActiveUsers();
+    expect(activeUsersList).toHaveLength(2);
+
+    for (let i = 0; i < activeUsersList.length; i++) {
+      expect(activeUsersList[i].email).toEqual(mockUserList[i].email);
+      expect(activeUsersList[i].name).toEqual(mockUserList[i].name);
+      expect(activeUsersList[i].isSubscribed()).toBeTruthy();
+    }
+  });
 });

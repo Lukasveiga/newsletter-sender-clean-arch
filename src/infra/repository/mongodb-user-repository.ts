@@ -19,7 +19,7 @@ export class MongoDBUserRepository implements UserRepository {
       existingUser.resubscribe();
       userCollection.updateOne(
         { email: existingUser.email },
-        { $set: { active: existingUser.isSubscribed } }
+        { $set: { active: existingUser.isSubscribed() } }
       );
       return;
     }
