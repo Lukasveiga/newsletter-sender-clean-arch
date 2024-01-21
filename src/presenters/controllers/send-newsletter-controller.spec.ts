@@ -24,7 +24,7 @@ class EmailServiceSpy implements EmailService {
 }
 
 class HtmlCompilerSpy implements HtmlCompiler {
-  async compile(path: string, context: Context): Promise<string> {
+  async compileHtml(path: string, context: Context): Promise<string> {
     return "";
   }
 }

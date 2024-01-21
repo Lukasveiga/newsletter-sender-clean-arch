@@ -28,7 +28,7 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
       };
 
       try {
-        const htmlString = await this.htmlCompiler.compile(path, contextOptions);
+        const htmlString = await this.htmlCompiler.compileHtml(path, contextOptions);
 
         const options = {
           host: this.emailOptions.host,

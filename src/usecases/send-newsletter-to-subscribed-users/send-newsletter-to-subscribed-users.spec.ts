@@ -27,7 +27,7 @@ class EmailServiceSpy implements EmailService {
 }
 
 class HtmlCompilerSpy implements HtmlCompiler {
-  async compile(path: string, context: Context): Promise<string> {
+  async compileHtml(path: string, context: Context): Promise<string> {
     return "";
   }
 }
@@ -90,7 +90,7 @@ describe("SendNewsletterToSubscribedUsers", () => {
 
     const { sut, htmlCompilerSpy } = makeSut(userList);
 
-    jest.spyOn(htmlCompilerSpy, "compile").mockImplementation(() => {
+    jest.spyOn(htmlCompilerSpy, "compileHtml").mockImplementation(() => {
       throw new HtmlCompilerError();
     });
 
