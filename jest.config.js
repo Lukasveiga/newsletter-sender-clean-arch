@@ -1,8 +1,8 @@
 module.exports = {
   roots: ["<rootDir>/src"],
   clearMocks: true,
-  testEnvironment: "node",
   coverageProvider: "v8",
+  preset: "@shelf/jest-mongodb",
   transform: {
     "^.+\\.ts?$": "@swc/jest",
   },
