@@ -14,7 +14,7 @@ export class MongoDBUserRepository implements UserRepository {
       return;
     }
 
-    if (existingUser && !existingUser.isSubscribed) {
+    if (existingUser && !existingUser.isSubscribed()) {
       const userCollection = MongoTools.getCollection("users");
       existingUser.resubscribe();
       userCollection.updateOne(

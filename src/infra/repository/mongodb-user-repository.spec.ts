@@ -1,6 +1,7 @@
 import { MongoDBUserRepository } from "./mongodb-user-repository";
 import { MongoTools } from "./tools/mongo-tools";
 import { UserData } from "../../entities/user/user-data";
+import { User } from "../../entities/user/user";
 
 const sut = new MongoDBUserRepository();
 
@@ -53,5 +54,25 @@ describe("MongoDB User Repository", () => {
       expect(activeUsersList[i].name).toEqual(mockUserList[i].name);
       expect(activeUsersList[i].isSubscribed()).toBeTruthy();
     }
+  });
+
+  test("Should update active status of already registered user who unsubscribed", async () => {
+    let user: User | null;
+    const mockUser: UserData = { name: "test_name", email: "test_email@email.com" };
+
+    await sut.add(mockUser);
+    user = await sut.findUserByEmail(mockUser.email);
+    expect(user?.isSubscribed()).toBeTruthy();
+
+    await sut.updateActiveStatus(mockUser.email);
+    user = await sut.findUserByEmail(mockUser.email);
+    expect(user?.isSubscribed()).toBeFalsy();
+
+    await sut.add(mockUser);
+    user = await sut.findUserByEmail(mockUser.email);
+    expect(user?.isSubscribed()).toBeTruthy();
+
+    const checkDuplicatedUser = await sut.findAllActiveUsers();
+    expect(checkDuplicatedUser).toHaveLength(1);
   });
 });
