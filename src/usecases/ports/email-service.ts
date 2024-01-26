@@ -3,10 +3,10 @@ export interface EmailOptions {
   readonly port: number;
   readonly user: string;
   readonly pass: string;
-  readonly from: string;
-  readonly to: string;
-  readonly subject: string;
-  readonly html: string;
+  readonly from?: string;
+  readonly to?: string;
+  readonly subject?: string;
+  readonly html?: string;
 }
 
 export interface EmailService {

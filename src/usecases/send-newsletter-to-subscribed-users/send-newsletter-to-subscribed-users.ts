@@ -35,7 +35,7 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
           port: this.emailOptions.port,
           user: this.emailOptions.user,
           pass: this.emailOptions.pass,
-          from: this.emailOptions.from,
+          from: "Lukas Veiga - Backend Dev. <lukas.veiga@backend.dev.com>",
           to: `${activeUser.name} <${activeUser.email}>`,
           subject: this.emailOptions.subject,
           html: htmlString,
