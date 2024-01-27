@@ -9,7 +9,7 @@ export class SendNewsletterController {
     try {
       const path = __dirname + "/templates/newsletter.html";
       await this.sendNewsletter.sendNewsletterToSubscribedUsers(path);
-      return ok("Newsletters sent successfully");
+      return ok({ message: "Newsletters sent successfully" });
     } catch (error) {
       return serverError();
     }
