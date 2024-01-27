@@ -14,12 +14,8 @@ describe("Newsletter Routes", () => {
     await MongoTools.disconnect();
   });
 
-  beforeEach(async () => {
-    await MongoTools.clearCollection("users");
-  });
-
   test("Should return user data when registration was successful", async () => {
-    const requestBodyTest = { email: "userr_test@email.com", name: "user_test" };
+    const requestBodyTest = { email: "user_test@email.com", name: "user_test" };
 
     const response = await request(app)
       .post(BASE_URL + "/subscribe")
@@ -27,5 +23,12 @@ describe("Newsletter Routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(requestBodyTest);
+  });
+
+  test("Should return successful message when the emails are sent", async () => {
+    const response = await request(app).post(BASE_URL + "/send");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual("Newsletters sent successfully");
   });
 });
