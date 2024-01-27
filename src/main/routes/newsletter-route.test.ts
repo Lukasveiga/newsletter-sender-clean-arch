@@ -29,6 +29,15 @@ describe("Newsletter Routes", () => {
     const response = await request(app).post(BASE_URL + "/send");
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual("Newsletters sent successfully");
+    expect(response.body.message).toEqual("Newsletters sent successfully");
+  });
+
+  test("Should return unsubscribe message when user unsubscribed", async () => {
+    const response = await request(app)
+      .patch(BASE_URL + "/unsubscribe")
+      .send({ email: "user_test@email.com" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toEqual("User unsubscribed");
   });
 });
