@@ -3,7 +3,7 @@ import { HandlebarsHtmlCompilerService } from "../../infra/html-compiler-service
 import { MongoDBUserRepository } from "../../infra/repository/mongodb-user-repository";
 import { SendNewsletterController } from "../../presenters/controllers/send-newsletter-controller";
 import { SendNewsletterToSubscribedUsers } from "../../usecases/send-newsletter-to-subscribed-users/send-newsletter-to-subscribed-users";
-import emailOptions from "../config/email";
+import { getEmailOptions } from "../config/email";
 
 export const makeSendNewsletterController = (): SendNewsletterController => {
   const mongoDBUserRepository = new MongoDBUserRepository();
@@ -12,7 +12,7 @@ export const makeSendNewsletterController = (): SendNewsletterController => {
   const sendNewsletterToSubscribedUsers = new SendNewsletterToSubscribedUsers(
     mongoDBUserRepository,
     nodemailerEmailService,
-    emailOptions,
+    getEmailOptions(),
     handlebarsHtmlCompilerService
   );
   const sendNewsletterController = new SendNewsletterController(sendNewsletterToSubscribedUsers);
