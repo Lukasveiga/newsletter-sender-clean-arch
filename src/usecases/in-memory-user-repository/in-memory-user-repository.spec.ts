@@ -65,12 +65,4 @@ describe("InMemoryUserRepository", () => {
     const existingUser = await inMemoryUserRepository.findUserByEmail(user.email);
     expect(existingUser?.isSubscribed()).toBeFalsy();
   });
-
-  test("Should throw if user is not found when try to update the active status", async () => {
-    const user: User = User.create({ name: "User", email: "user@email.com" });
-    const usersList: User[] = [];
-    const inMemoryUserRepository = new InMemoryUserRepository(usersList);
-    const promise = inMemoryUserRepository.updateActiveStatus(user.email);
-    expect(promise).rejects.toThrow(new UserNotFound());
-  });
 });

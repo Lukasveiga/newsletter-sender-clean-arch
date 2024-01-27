@@ -39,10 +39,6 @@ export class InMemoryUserRepository implements UserRepository {
 
   async updateActiveStatus(email: string): Promise<void> {
     const exist = await this.findUserByEmail(email);
-    if (!exist) {
-      throw new UserNotFound();
-    }
-
-    exist.unsubscribe();
+    exist?.unsubscribe();
   }
 }
