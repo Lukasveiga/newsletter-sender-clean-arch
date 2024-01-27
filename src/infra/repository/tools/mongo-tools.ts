@@ -15,7 +15,7 @@ export class MongoTools {
     return this.client.db().collection(name);
   }
 
-  static clearCollection(name: string): void {
-    this.client.db().collection(name).deleteMany({});
+  static async clearCollection(name: string): Promise<void> {
+    await this.client.db().collection(name).deleteMany({});
   }
 }
