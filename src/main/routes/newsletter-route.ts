@@ -21,7 +21,7 @@ route.post("/subscribe", async (req: Request, res: Response) => {
   return res.status(httpResponse.statusCode).json(httpResponse.body);
 });
 
-route.post("/unsubscribe", async (req: Request, res: Response) => {
+route.patch("/unsubscribe", async (req: Request, res: Response) => {
   const httpRequest: HttpRequest = {
     body: req.body,
   };
