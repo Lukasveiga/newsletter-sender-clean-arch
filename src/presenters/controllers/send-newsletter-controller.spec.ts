@@ -50,7 +50,7 @@ describe("SendNewsletterController", () => {
     const { sut } = makeSut();
     const httpResponse = await sut.send();
     expect(httpResponse.statusCode).toEqual(200);
-    expect(httpResponse.body).toEqual("Newsletters sent successfully");
+    expect(httpResponse.body.message).toEqual("Newsletters sent successfully");
   });
 
   test("Should retruns status code 500 when sendNewsletterToSubscribedUsers throws unexpected error", async () => {
