@@ -93,7 +93,7 @@ _What are the advantages of building a project following this architecture?_
 ### Test Coverage:
 
 <div align="center">
-<img src="./assets/coverage.png" width="500"/>
+<img src="https://raw.githubusercontent.com/Lukasveiga/newsletter-sender-clean-arch/main/assets/coverage.png" width="500"/>
 </div>
 
 <hr>
