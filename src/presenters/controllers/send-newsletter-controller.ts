@@ -11,6 +11,7 @@ export class SendNewsletterController {
       await this.sendNewsletter.sendNewsletterToSubscribedUsers(path);
       return ok({ message: "Newsletters sent successfully" });
     } catch (error) {
+      console.error(error);
       return serverError();
     }
   }

@@ -19,7 +19,7 @@ export class UnsubscribeUserController {
       if (error instanceof UsecaseError) {
         return notFound(error);
       }
-
+      console.error(error);
       return serverError();
     }
   }

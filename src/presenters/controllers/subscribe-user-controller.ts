@@ -22,7 +22,7 @@ export class SubscribeUserController {
       if (error instanceof DomainError) {
         return badRequest(error);
       }
-
+      console.error(error);
       return serverError();
     }
   }
