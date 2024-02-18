@@ -98,6 +98,10 @@ _What are the advantages of building a project following this architecture?_
 
 <hr>
 
+### Containerizing the application:
+
+<hr>
+
 ### Next features to be implemented:
 
 - Unsubscribe link into de the email;
