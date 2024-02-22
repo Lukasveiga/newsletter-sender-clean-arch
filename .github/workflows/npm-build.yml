@@ -1,5 +1,8 @@
 name: Node CI with NPM
 
+env:
+  MONGO_URL_DEV: ${{secrets.DB_URL}}
+
 on:
   push:
     branches:
