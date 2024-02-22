@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
+      - name: Create .env file
+        run: touch .env
+      - name: Write .env file content
+        run: echo MONGO_URL_DEV=${{ secrets.DB_URL }} >> .env
       - name: Set NodeJs 18v
         uses: actions/setup-node@v3
         with:
@@ -20,5 +24,3 @@ jobs:
           run:
       - run: npm ci
       - run: npm run test:coverage
-        env:
-          MONGO_URL_DEV: ${{ secrets.DB_URL }}
