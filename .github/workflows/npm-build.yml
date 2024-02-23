@@ -23,6 +23,7 @@ jobs:
           echo EMAIL_PORT_DEV=${{ secrets.EMAIL_PORT_DEV }} >> .env
           echo EMAIL_USER_DEV=${{ secrets.EMAIL_USER_DEV }} >> .env
           echo EMAIL_PASSWORD_DEV=${{ secrets.EMAIL_PASSWORD_DEV }} >> .env
+          pwd
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
