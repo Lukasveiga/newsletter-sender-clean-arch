@@ -2,24 +2,26 @@ name: Node CI with NPM
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
 
 jobs:
-  build:
+  test-ci:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
 
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
-      - name: Create .env file
-        run: |
-          touch .env
-          echo 'MONGO_URL_DEV=${{ secrets.DB_URL }}' >> .env
-          cat .env
-      - name: Set NodeJs 18v
+      - name: Load enviroment variables
+        uses: dotenv-actions/setup-dotenv@v2
+        with:
+          dotenv_path: .env
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run test:coverage
