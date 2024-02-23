@@ -16,7 +16,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
       - name: Load enviroment variables
-        uses: ozaytsev86/create-env-file@v1
+        uses: SpicyPizza/create-envfile@v2.0
         with:
           MONGO_URL_DEV: ${{ secrets.MONGO_URL_DEV }}
           EMAIL_HOST_DEV: ${{ secrets.EMAIL_HOST_DEV }}
