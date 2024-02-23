@@ -16,9 +16,13 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
       - name: Load enviroment variables
-        uses: dotenv-actions/setup-dotenv@v2
+        uses: ozaytsev86/create-env-file@v1
         with:
-          dotenv_path: .env
+          MONGO_URL_DEV: ${{ secrets.MONGO_URL_DEV }}
+          EMAIL_HOST_DEV: ${{ secrets.EMAIL_HOST_DEV }}
+          EMAIL_PORT_DEV: ${{ secrets.EMAIL_PORT_DEV }}
+          EMAIL_USER_DEV: ${{ secrets.EMAIL_USER_DEV }}
+          EMAIL_PASSWORD_DEV: ${{ secrets.EMAIL_PASSWORD_DEV }}
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
