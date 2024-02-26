@@ -9,8 +9,8 @@
     "start": "npm run build && NODE_ENV=dev node dist/main/server.js",
     "dev": "NODE_ENV=dev npx ts-node src/main/server.ts",
     "test": "jest --passWithNoTests --noStackTrace --runInBand",
-    "test:unit": "npm test -- --watch -c ./jest-unit-config.js",
-    "test:int": "npm test -- --watch -c ./jest-int-config.js",
+    "test:unit": "npm test -- -c ./jest-unit-config.js",
+    "test:int": "npm test -- -c ./jest-int-config.js",
     "test:coverage": "npm test -- --coverage"
   },
   "keywords": [],
