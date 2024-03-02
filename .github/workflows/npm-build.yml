@@ -14,6 +14,7 @@ env:
 jobs:
   test-ci:
     runs-on: ubuntu-latest
+    environment: dev
 
     strategy:
       matrix:
