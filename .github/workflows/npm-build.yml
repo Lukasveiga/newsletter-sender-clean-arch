@@ -4,6 +4,13 @@ on:
   push:
   pull_request:
 
+env:
+  EMAIL_HOST_DEV: ${{secrets.EMAIL_HOST_DEV}}
+  EMAIL_PASSWORD_DEV: ${{secrets.EMAIL_PASSWORD_DEV}}
+  EMAIL_PORT_DEV: ${{secrets.EMAIL_PORT_DEV}}
+  EMAIL_USER_DEV: ${{secrets.EMAIL_USER_DEV}}
+  MONGO_URL_DEV: ${{secrets.MONGO_URL_DEV}}
+
 jobs:
   test-ci:
     runs-on: ubuntu-latest
