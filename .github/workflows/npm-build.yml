@@ -6,6 +6,7 @@ on:
 
 jobs:
   test-ci:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,6 +16,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
+
+      - name: Start docker container
+        run: docker-compose -f "docker-compose.yml" up -d --build
+
       - name: Create env file
         run: |
           touch .env
@@ -23,9 +28,14 @@ jobs:
           echo EMAIL_PORT_DEV=${{secrets.EMAIL_PORT_DEV}} >> .env
           echo EMAIL_USER_DEV=${{secrets.EMAIL_USER_DEV}} >> .env
           echo MONGO_URL_DEV=${{secrets.MONGO_URL_DEV}} >> .env
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run test:coverage
+
+      - name: Stop container
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down
