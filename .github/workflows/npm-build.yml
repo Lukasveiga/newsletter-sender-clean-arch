@@ -28,4 +28,5 @@ jobs:
           echo "${{secrets.EMAIL_PORT_DEV}}" >> .env
           echo "${{secrets.EMAIL_USER_DEV}}" >> .env
           echo "${{secrets.MONGO_URL_DEV}}" >> .env
+          cat .env
       - run: npm run test:coverage
