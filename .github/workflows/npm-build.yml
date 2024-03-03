@@ -7,7 +7,6 @@ on:
 jobs:
   test-ci:
     runs-on: ubuntu-latest
-    environment: dev
 
     strategy:
       matrix:
@@ -19,11 +18,11 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo ${{secrets.EMAIL_HOST_DEV}} >> .env
-          echo ${{secrets.EMAIL_PASSWORD_DEV}} >> .env
-          echo ${{secrets.EMAIL_PORT_DEV}} >> .env
-          echo ${{secrets.EMAIL_USER_DEV}} >> .env
-          echo ${{secrets.MONGO_URL_DEV}} >> .env
+          echo EMAIL_HOST_DEV=${{secrets.EMAIL_HOST_DEV}} >> .env
+          echo EMAIL_PASSWORD_DEV=${{secrets.EMAIL_PASSWORD_DEV}} >> .env
+          echo EMAIL_PORT_DEV=${{secrets.EMAIL_PORT_DEV}} >> .env
+          echo EMAIL_USER_DEV=${{secrets.EMAIL_USER_DEV}} >> .env
+          echo MONGO_URL_DEV=${{secrets.MONGO_URL_DEV}} >> .env
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
