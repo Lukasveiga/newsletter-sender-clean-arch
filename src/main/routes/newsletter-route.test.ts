@@ -1,4 +1,5 @@
 import { MongoTools } from "../../infra/repository/tools/mongo-tools";
+import "dotenv/config";
 import app from "../config/app";
 import request from "supertest";
 
