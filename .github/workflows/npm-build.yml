@@ -28,5 +28,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: npm run test:unit
-      - run: npm run test:coverage
+      - run: |
+          touch .env
+          echo EMAIL_HOST_DEV=$EMAIL_HOST_DEV >> .env
+          echo EMAIL_PASSWORD_DEV=$EMAIL_PASSWORD_DEV >> .env
+          echo EMAIL_PORT_DEV=$EMAIL_PORT_DEV >> .env
+          echo EMAIL_USER_DEV=$EMAIL_USER_DEV >> .env
+          echo MONGO_URL_DEV=$MONGO_URL_DEV >> .env
+          npm run test:coverage
+        env:
+          EMAIL_HOST_DEV: ${{secrets.EMAIL_HOST_DEV}}
+          EMAIL_PASSWORD_DEV: ${{secrets.EMAIL_PASSWORD_DEV}}
+          EMAIL_PORT_DEV: ${{secrets.EMAIL_PORT_DEV}}
+          EMAIL_USER_DEV: ${{secrets.EMAIL_USER_DEV}}
+          MONGO_URL_DEV: ${{secrets.MONGO_URL_DEV}}
