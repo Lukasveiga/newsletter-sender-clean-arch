@@ -4,10 +4,11 @@ import app from "../config/app";
 import request from "supertest";
 
 const BASE_URL = "/api/v1/newsletter";
+const mongo_url = process.env.MONGO_URL_DEV!;
 
 describe("Newsletter Routes", () => {
   beforeAll(async () => {
-    await MongoTools.connect(process.env.MONGO_URL_DEV as string);
+    await MongoTools.connect(mongo_url);
   });
 
   afterAll(async () => {
