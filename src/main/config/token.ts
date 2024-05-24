@@ -3,7 +3,7 @@ import "dotenv/config";
 
 export const getTokenOptions = (): TokenOptions => {
   const tokenOptions: TokenOptions = {
-    secretKey: process.env.secretKey as string,
+    secretKey: process.env.SECRET_KEY as string,
     expiresIn: "5d",
     algorithm: "HS256",
     iss: "news-letter-sender",

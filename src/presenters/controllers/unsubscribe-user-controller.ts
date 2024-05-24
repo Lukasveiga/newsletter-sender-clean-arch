@@ -13,7 +13,7 @@ export class UnsubscribeUserController {
     try {
       await this.unsubscribeUser.unsubscribeUserFromNewsletterList(
         token,
-        process.env.secretKey as string
+        process.env.SECRET_KEY as string
       );
       const path = __dirname + "/templates/unsubscribe-page.html";
       return ok({ path });

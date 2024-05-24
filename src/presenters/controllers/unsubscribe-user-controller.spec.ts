@@ -46,7 +46,7 @@ describe("UnsubscribeUserController", () => {
 
     await sut.unsubscribe(httpRequest);
 
-    expect(unsubscribeUserSpy).toHaveBeenCalledWith("token", process.env.secretKey as string);
+    expect(unsubscribeUserSpy).toHaveBeenCalledWith("token", process.env.SECRET_KEY as string);
   });
 
   test("unsubscribe return status 404 and message for user not found error", async () => {
