@@ -1,6 +1,6 @@
 import { NodemailerEmailService } from "./nodemailer-email-service";
 import { EmailOptions } from "./../../usecases/ports/email-service";
-import { EmailServiceError } from "../../usecases/errors/email-service-error";
+import { EmailServiceError } from "../errors/email-service-error";
 
 const sut = new NodemailerEmailService();
 

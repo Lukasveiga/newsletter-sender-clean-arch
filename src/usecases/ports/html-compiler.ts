@@ -1,5 +1,8 @@
 export type Context = {
   username?: string;
+  host?: string;
+  port?: string;
+  token?: string;
 };
 
 export interface HtmlCompiler {

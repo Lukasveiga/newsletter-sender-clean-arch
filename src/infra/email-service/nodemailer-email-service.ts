@@ -1,4 +1,4 @@
-import { EmailServiceError } from "../../usecases/errors/email-service-error";
+import { EmailServiceError } from "../errors/email-service-error";
 import { EmailOptions, EmailService } from "../../usecases/ports/email-service";
 import * as nodemailer from "nodemailer";
 

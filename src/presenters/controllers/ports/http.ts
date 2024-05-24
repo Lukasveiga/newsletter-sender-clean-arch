@@ -4,5 +4,8 @@ export type HttpResponse = {
 };
 
 export type HttpRequest = {
+  host?: any;
+  port?: any;
   body?: any;
+  query?: any;
 };

@@ -1,21 +1,23 @@
-import { EmailServiceError } from "./../errors/email-service-error";
 import { User } from "../../entities/user/user";
 import { EmailOptions, EmailService } from "../ports/email-service";
 import { Context, HtmlCompiler } from "../ports/html-compiler";
 import { UserRepository } from "../ports/user-repository";
 import { SendNewsletter } from "./send-newsletter";
-import { UsecaseError } from "../errors/usecase-error";
-import { HtmlCompilerError } from "../errors/html-compiler-error";
+import { Token, TokenOptions } from "../ports/token";
+
+// TODO - Handle with errors than can be thrown by dependencies
 
 export class SendNewsletterToSubscribedUsers implements SendNewsletter {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly emailService: EmailService,
     private readonly emailOptions: EmailOptions,
-    private readonly htmlCompiler: HtmlCompiler
+    private readonly htmlCompiler: HtmlCompiler,
+    private readonly token: Token,
+    private readonly tokenOptions: TokenOptions
   ) {}
 
-  async sendNewsletterToSubscribedUsers(path: string): Promise<void> {
+  async sendNewsletterToSubscribedUsers(path: string, host: string, port: string): Promise<void> {
     const activeUsers: User[] = await this.userRepository.findAllActiveUsers();
 
     if (activeUsers.length < 1) {
@@ -23,34 +25,29 @@ export class SendNewsletterToSubscribedUsers implements SendNewsletter {
     }
 
     for (let activeUser of activeUsers) {
+      const token = this.token.generate(activeUser.email, this.tokenOptions);
+
       const contextOptions: Context = {
         username: activeUser.name,
+        host,
+        port,
+        token,
       };
 
-      try {
-        const htmlString = await this.htmlCompiler.compileHtml(path, contextOptions);
+      const htmlString = await this.htmlCompiler.compileHtml(path, contextOptions);
 
-        const options = {
-          host: this.emailOptions.host,
-          port: this.emailOptions.port,
-          user: this.emailOptions.user,
-          pass: this.emailOptions.pass,
-          from: "Lukas Veiga - Backend Dev. <lukas.veiga@backend.dev.com>",
-          to: `${activeUser.name} <${activeUser.email}>`,
-          subject: this.emailOptions.subject,
-          html: htmlString,
-        };
+      const options = {
+        host: this.emailOptions.host,
+        port: this.emailOptions.port,
+        user: this.emailOptions.user,
+        pass: this.emailOptions.pass,
+        from: "Lukas Veiga - Backend Dev. <lukas.veiga@backend.dev.com>",
+        to: `${activeUser.name} <${activeUser.email}>`,
+        subject: this.emailOptions.subject,
+        html: htmlString,
+      };
 
-        this.emailService.send(options);
-      } catch (error) {
-        let catchError = new Error();
-        if (error instanceof UsecaseError) {
-          catchError =
-            error.name === "EmailServiceError" ? new EmailServiceError() : new HtmlCompilerError();
-        }
-
-        throw catchError;
-      }
+      this.emailService.send(options);
     }
   }
 }

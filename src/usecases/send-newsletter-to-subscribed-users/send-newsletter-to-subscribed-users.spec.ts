@@ -5,8 +5,7 @@ import { UserRepository } from "../ports/user-repository";
 import { User } from "../../entities/user/user";
 import { SendNewsletterToSubscribedUsers } from "./send-newsletter-to-subscribed-users";
 import { UserData } from "../../entities/user/user-data";
-import { EmailServiceError } from "../errors/email-service-error";
-import { HtmlCompilerError } from "../errors/html-compiler-error";
+import { Token, TokenOptions } from "../ports/token";
 
 const emailOptions: EmailOptions = {
   host: "host_test",
@@ -17,6 +16,14 @@ const emailOptions: EmailOptions = {
   to: "to_test@email.com",
   subject: "subject_test",
   html: "html_test",
+};
+
+const tokenOptions: TokenOptions = {
+  secretKey: "123",
+  expiresIn: "1",
+  algorithm: "HS256",
+  iss: "api",
+  iat: 5,
 };
 
 class EmailServiceSpy implements EmailService {
@@ -32,70 +39,105 @@ class HtmlCompilerSpy implements HtmlCompiler {
   }
 }
 
+class TokenSpy implements Token {
+  generate(email: string, tokenOptions: TokenOptions): string {
+    return "";
+  }
+  validate(token: string, secretKey: string) {
+    return "";
+  }
+}
+
 const makeSut = (userList: User[]) => {
   const inMemoryUserRpository: UserRepository = new InMemoryUserRepository(userList);
-  const emailServiceSpy = new EmailServiceSpy();
-  const htmlCompilerSpy = new HtmlCompilerSpy();
+  const emailService = new EmailServiceSpy();
+  const htmlCompiler = new HtmlCompilerSpy();
+  const token = new TokenSpy();
   const sut = new SendNewsletterToSubscribedUsers(
     inMemoryUserRpository,
-    emailServiceSpy,
+    emailService,
     emailOptions,
-    htmlCompilerSpy
+    htmlCompiler,
+    token,
+    tokenOptions
   );
-  return { sut, emailServiceSpy, htmlCompilerSpy };
+  return { sut, emailService, emailOptions, htmlCompiler, token, tokenOptions };
 };
 
 describe("SendNewsletterToSubscribedUsers", () => {
+  const path = "test_path";
+  const host = "localhost";
+  const port = "3030";
+  const userData: UserData = { name: "name_test", email: "email_test@email.com" };
   test("Should not send email with newsletter if there are no subscribed users", async () => {
     const userList: User[] = [];
-    const path: string = "test_path";
 
     const { sut } = makeSut(userList);
-    await sut.sendNewsletterToSubscribedUsers(path);
+    await sut.sendNewsletterToSubscribedUsers(path, host, port);
 
     expect(EmailServiceSpy.sendFuctionWasCalled).toBeFalsy();
   });
 
   test("Should send email with newsletter", async () => {
-    const userData: UserData = { name: "name_test", email: "email_test@email.com" };
     const userList: User[] = [User.create(userData)];
     const path: string = "test_path";
 
     const { sut } = makeSut(userList);
-    await sut.sendNewsletterToSubscribedUsers(path);
+    await sut.sendNewsletterToSubscribedUsers(path, host, port);
 
     expect(EmailServiceSpy.sendFuctionWasCalled).toBeTruthy();
   });
 
-  test("Should throw if send method throws", async () => {
-    const userData: UserData = { name: "name_test", email: "email_test@email.com" };
+  test("Should call token generate function with correct parameters", async () => {
     const userList: User[] = [User.create(userData)];
     const path: string = "test_path";
 
-    const { sut, emailServiceSpy } = makeSut(userList);
+    const { sut, token, tokenOptions } = makeSut(userList);
 
-    jest.spyOn(emailServiceSpy, "send").mockImplementation(() => {
-      throw new EmailServiceError();
-    });
+    const tokenSpy = jest.spyOn(token, "generate");
 
-    const promise = sut.sendNewsletterToSubscribedUsers(path);
+    await sut.sendNewsletterToSubscribedUsers(path, host, port);
 
-    expect(promise).rejects.toThrow(EmailServiceError);
+    expect(tokenSpy).toHaveBeenCalledWith(userData.email, tokenOptions);
   });
 
-  test("Should throw if HtmlCompiler method throws", async () => {
-    const userData: UserData = { name: "name_test", email: "email_test@email.com" };
+  test("Should call htmlCompiler compileHtml function with correct parameters", async () => {
     const userList: User[] = [User.create(userData)];
     const path: string = "test_path";
 
-    const { sut, htmlCompilerSpy } = makeSut(userList);
+    const { sut, htmlCompiler } = makeSut(userList);
 
-    jest.spyOn(htmlCompilerSpy, "compileHtml").mockImplementation(() => {
-      throw new HtmlCompilerError();
+    const htmlCompilerSpy = jest.spyOn(htmlCompiler, "compileHtml");
+
+    await sut.sendNewsletterToSubscribedUsers(path, host, port);
+
+    expect(htmlCompilerSpy).toHaveBeenCalledWith(path, {
+      username: userData.name,
+      host,
+      port,
+      token: "",
     });
+  });
 
-    const promise = sut.sendNewsletterToSubscribedUsers(path);
+  test("Should call emailService send function with correct parameters", async () => {
+    const userList: User[] = [User.create(userData)];
+    const path: string = "test_path";
 
-    expect(promise).rejects.toThrow(HtmlCompilerError);
+    const { sut, emailService, emailOptions } = makeSut(userList);
+
+    const emailServiceSpy = jest.spyOn(emailService, "send");
+
+    await sut.sendNewsletterToSubscribedUsers(path, host, port);
+
+    expect(emailServiceSpy).toHaveBeenCalledWith({
+      host: emailOptions.host,
+      port: emailOptions.port,
+      user: emailOptions.user,
+      pass: emailOptions.pass,
+      from: "Lukas Veiga - Backend Dev. <lukas.veiga@backend.dev.com>",
+      to: `${userData.name} <${userData.email}>`,
+      subject: emailOptions.subject,
+      html: "",
+    });
   });
 });

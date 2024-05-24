@@ -1,3 +1,3 @@
 export interface UnsubscribeUser {
-  unsubscribeUserFromNewsletterList(email: string): Promise<void>;
+  unsubscribeUserFromNewsletterList(token: string, secretKey: string): Promise<void>;
 }
