@@ -1,83 +1,105 @@
-import { InMemoryUserRepository } from "./../../usecases/in-memory-user-repository/in-memory-user-repository";
+import { InvalidTokenError } from "./../../infra/errors/token-error";
+import { UserNotFound } from "./../../usecases/errors/user-repository-error";
 import { UnsubscribeUserController } from "./unsubscribe-user-controller";
-import { UnsubscribeUserFromNewsletterList } from "../../usecases/unsubscribe-user-of-newsletter-list/unsubscribe-user-from-newsletter-list";
-import { User } from "../../entities/user/user";
+import { UnsubscribeUser } from "./../../usecases/unsubscribe-user-of-newsletter-list/unsubscribe-user";
+import "dotenv/config";
 
-const userTest: User = User.create({ name: "test_name", email: "test_email@email.com" });
+class UnsubscribeUserSpy implements UnsubscribeUser {
+  async unsubscribeUserFromNewsletterList(token: string, secretKey: string): Promise<void> {}
+}
 
 const makeSut = () => {
-  const userList: User[] = [userTest];
-  const inMemoryUserRepository = new InMemoryUserRepository(userList);
-  const unsubscribeUserFromNewsletterList = new UnsubscribeUserFromNewsletterList(
-    inMemoryUserRepository
-  );
-  const sut = new UnsubscribeUserController(unsubscribeUserFromNewsletterList);
+  const unsubscribeUser = new UnsubscribeUserSpy();
+  const sut = new UnsubscribeUserController(unsubscribeUser);
 
-  return { sut, unsubscribeUserFromNewsletterList, inMemoryUserRepository };
+  return { sut, unsubscribeUser };
 };
 
 describe("UnsubscribeUserController", () => {
-  test("Should return status code 400 when email is not provided", async () => {
+  test("unsubscribe return status code 200 and template path", async () => {
     const httpRequest = {
-      body: {
-        email: "",
+      query: {
+        token: "token",
       },
     };
 
-    const { sut } = makeSut();
-    const httpResponse = await sut.unsubscribe(httpRequest);
-    expect(httpResponse.statusCode).toEqual(400);
-    expect(httpResponse.body.message).toEqual("email is required");
+    const { sut, unsubscribeUser } = makeSut();
+
+    jest.spyOn(unsubscribeUser, "unsubscribeUserFromNewsletterList").mockResolvedValue();
+
+    const response = await sut.unsubscribe(httpRequest);
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.path).toEqual(__dirname + "/templates/unsubscribe-page.html");
   });
 
-  test("Should return status code 404 when user is not found", async () => {
+  test("unsubscribeUser service is called with correct params", async () => {
     const httpRequest = {
-      body: {
-        email: "any_email",
+      query: {
+        token: "token",
       },
     };
 
-    const { sut } = makeSut();
-    const httpResponse = await sut.unsubscribe(httpRequest);
-    expect(httpResponse.statusCode).toEqual(404);
-    expect(httpResponse.body.message).toEqual("User not found");
+    const { sut, unsubscribeUser } = makeSut();
+
+    const unsubscribeUserSpy = jest.spyOn(unsubscribeUser, "unsubscribeUserFromNewsletterList");
+
+    await sut.unsubscribe(httpRequest);
+
+    expect(unsubscribeUserSpy).toHaveBeenCalledWith("token", process.env.secretKey as string);
   });
 
-  test("Should return status code 500 when UnsubscribeUserFromNewsletterList throws unexpected error", async () => {
+  test("unsubscribe return status 404 and message for user not found error", async () => {
     const httpRequest = {
-      body: {
-        email: "any_email",
+      query: {
+        token: "token",
       },
     };
 
-    const { sut, unsubscribeUserFromNewsletterList } = makeSut();
+    const { sut, unsubscribeUser } = makeSut();
 
     jest
-      .spyOn(unsubscribeUserFromNewsletterList, "unsubscribeUserFromNewsletterList")
-      .mockImplementation(() => {
-        throw new Error();
-      });
+      .spyOn(unsubscribeUser, "unsubscribeUserFromNewsletterList")
+      .mockRejectedValue(new UserNotFound());
 
-    const httpResponse = await sut.unsubscribe(httpRequest);
-    expect(httpResponse.statusCode).toEqual(500);
-    expect(httpResponse.body.message).toEqual("Internal Server Error");
+    const response = await sut.unsubscribe(httpRequest);
+    expect(response.statusCode).toEqual(404);
+    expect(response.body.message).toEqual("User not found");
   });
 
-  test("Should return status code 200 when user is successfully unsubscribed", async () => {
+  test("unsubscribe return status 498 and message for invalid token error", async () => {
     const httpRequest = {
-      body: {
-        email: userTest.email,
+      query: {
+        token: "token",
       },
     };
 
-    const { sut } = makeSut();
+    const { sut, unsubscribeUser } = makeSut();
 
-    expect(userTest.isSubscribed()).toBeTruthy();
+    jest
+      .spyOn(unsubscribeUser, "unsubscribeUserFromNewsletterList")
+      .mockRejectedValue(new InvalidTokenError());
 
-    const httpResponse = await sut.unsubscribe(httpRequest);
+    const response = await sut.unsubscribe(httpRequest);
+    expect(response.statusCode).toEqual(498);
+    expect(response.body.message).toEqual("Invalid Token Error");
+  });
 
-    expect(httpResponse.statusCode).toEqual(200);
-    expect(httpResponse.body.message).toEqual("User unsubscribed");
-    expect(userTest.isSubscribed()).toBeFalsy();
+  test("unsubscribe return status 500 and message for internal sever error", async () => {
+    const httpRequest = {
+      query: {
+        token: "token",
+      },
+    };
+
+    const { sut, unsubscribeUser } = makeSut();
+
+    jest
+      .spyOn(unsubscribeUser, "unsubscribeUserFromNewsletterList")
+      .mockRejectedValue(new Error("Random error"));
+
+    const response = await sut.unsubscribe(httpRequest);
+    expect(response.statusCode).toEqual(500);
+    expect(response.body.message).toEqual("Internal Server Error");
   });
 });

@@ -21,17 +21,21 @@ route.post("/subscribe", async (req: Request, res: Response) => {
   return res.status(httpResponse.statusCode).json(httpResponse.body);
 });
 
-route.patch("/unsubscribe", async (req: Request, res: Response) => {
+route.get("/unsubscribe", async (req: Request, res: Response) => {
   const httpRequest: HttpRequest = {
-    body: req.body,
+    query: req.query,
   };
 
   const httpResponse: HttpResponse = await usnsubscribeUserController.unsubscribe(httpRequest);
-  return res.status(httpResponse.statusCode).json(httpResponse.body);
+  return res.sendFile(httpResponse.body.path);
 });
 
 route.post("/send", async (req: Request, res: Response) => {
-  const httpResponse: HttpResponse = await sendNewsletterController.send();
+  const httpRequest: HttpRequest = {
+    host: req.headers.host?.split(":")[0],
+    port: req.headers.host?.split(":")[1],
+  };
+  const httpResponse: HttpResponse = await sendNewsletterController.send(httpRequest);
   return res.status(httpResponse.statusCode).json(httpResponse.body);
 });
 

@@ -1,5 +1,5 @@
-import { HtmlCompilerError } from "../../usecases/errors/html-compiler-error";
 import { Context } from "../../usecases/ports/html-compiler";
+import { HtmlCompilerError } from "../errors/html-compiler-error";
 import { HandlebarsHtmlCompilerService } from "./handlebars-html-compiler-service";
 import fs from "fs/promises";
 import handlebars from "handlebars";

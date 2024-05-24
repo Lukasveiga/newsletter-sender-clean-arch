@@ -1,6 +1,6 @@
-import { UsecaseError } from "./usecase-error";
+import { InfraError } from "./infra-error";
 
-export class HtmlCompilerError extends UsecaseError {
+export class HtmlCompilerError extends InfraError {
   constructor() {
     super("Html Compiler Service Error");
     this.name = "HtmlCompilerError";

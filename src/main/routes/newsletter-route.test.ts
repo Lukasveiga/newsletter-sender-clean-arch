@@ -2,9 +2,14 @@ import { MongoTools } from "../../infra/repository/tools/mongo-tools";
 import "dotenv/config";
 import app from "../config/app";
 import request from "supertest";
+import { JwtToken } from "../../infra/token/jwt-token";
+import { getTokenOptions } from "../config/token";
 
 const BASE_URL = "/api/v1/newsletter";
 const mongo_url = process.env.MONGO_URL_DEV!;
+
+const jwtToken = new JwtToken();
+const tokenOptions = getTokenOptions();
 
 describe("Newsletter Routes", () => {
   beforeAll(async () => {
@@ -34,12 +39,12 @@ describe("Newsletter Routes", () => {
     expect(response.body.message).toEqual("Newsletters sent successfully");
   });
 
-  test("Should return unsubscribe message when user unsubscribed", async () => {
+  test("Should send a file when user unsubscribed", async () => {
+    const token = jwtToken.generate("user_test@email.com", tokenOptions);
     const response = await request(app)
-      .patch(BASE_URL + "/unsubscribe")
-      .send({ email: "user_test@email.com" });
+      .get(BASE_URL + "/unsubscribe")
+      .query({ token });
 
-    expect(response.status).toBe(200);
-    expect(response.body.message).toEqual("User unsubscribed");
+    expect(response.text.includes("<h1>Successfully Unsubscribed</h1>")).toBeTruthy();
   });
 });

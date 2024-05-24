@@ -12,6 +12,10 @@ export const notFound = (error: Error): HttpResponse => {
   return { statusCode: 404, body: { message: error.message } };
 };
 
+export const invalidToken = (error: Error): HttpResponse => {
+  return { statusCode: 498, body: { message: error.message } };
+};
+
 export const serverError = (): HttpResponse => {
   return { statusCode: 500, body: { message: "Internal Server Error" } };
 };

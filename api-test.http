@@ -1,0 +1,10 @@
+POST http://localhost:3030/api/v1/newsletter/subscribe
+Content-Type: application/json
+
+{
+    "email": "user_test3@email.com",
+    "name": "user_test3"
+}
+
+###
+POST http://localhost:3030/api/v1/newsletter/send
