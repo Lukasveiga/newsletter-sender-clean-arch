@@ -259,7 +259,7 @@ docker run -p 3030:3030 devlukas/newsletter-sender:1.0
 
 ### Next features to be implemented:
 
-- Unsubscribe link into de the email;
+- <s>Unsubscribe link into de the email</s>;
 - Add a weekly email schedule (example: node-cron)
 
 <hr>
